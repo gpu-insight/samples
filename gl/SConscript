@@ -1,1 +1,14 @@
+import os
+
 Import('env')
+
+gl_env = env.Clone()
+
+source_list = [src for src in os.listdir('.') if src.endswith(('.cpp', '.c'))]
+
+executables = []
+for src in source_list:
+    executables.append(gl_env.Program(src))
+
+gl_env.Alias('install', gl_env.Install(gl_env['BINDIR'], executables))
+

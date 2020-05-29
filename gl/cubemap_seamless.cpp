@@ -1,18 +1,20 @@
 #include <EGL/egl.h>
 #include <GL/gl.h>
-#include <string>
-#include <program.hpp>
-#include <context.hpp>
-#include <icanvas.hpp>
-#include <screen.hpp>
-#include <matrices.hpp>
-#include <vertex_attrib.hpp>
-#include <draw_elements.hpp>
 #include <unistd.h>
+#include <string>
+#include <SDK/program.hpp>
+#include <SDK/context.hpp>
+#include <SDK/icanvas.hpp>
+#include <SDK/screen.hpp>
+#include <SDK/matrices.hpp>
+#include <SDK/vertex_attrib.hpp>
+#include <SDK/draw_elements.hpp>
 
 
 #define TEXTURE_WIDTH 512
 #define TEXTURE_HEIGHT 512
+
+namespace umd = botson::sdk;
 
 int main(int argc, char **argv) {
     auto c = umd::context::create(umd::context::api::OPENGL_ES_2);

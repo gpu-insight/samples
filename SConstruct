@@ -1,6 +1,15 @@
 import os
 
-env = Environment(CCFLAGS=['-std=c++11', '-g'])
+bin = "#bin"
+# lib = os.getenv('BOTSON_ROOT')
+include = "/home/botson/gitlab/gb_usermode_driver/gbumd/gbumd-x86_64-debug/include"
+lib = "/home/botson/gitlab/gb_usermode_driver/gbumd/gbumd-x86_64-debug/lib64"
+
+env = Environment(BINDIR=bin,
+                  CPPPATH=[include],
+                  LIBPATH=[lib],
+                  LIBS=['GL', 'SDK', 'botson'],
+                  CCFLAGS=['-std=c++11', '-g', '-DGL_GLEXT_PROTOTYPES'])
 
 Export('env')
 

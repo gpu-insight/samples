@@ -1,17 +1,18 @@
 #include <EGL/egl.h>
 #include <GL/gl.h>
 #include <string>
-#include <program.hpp>
-#include <drawable.hpp>
-#include <context.hpp>
-#include <icanvas.hpp>
-#include <screen.hpp>
-#include <draw_array.hpp>
-#include <matrices.hpp>
-#include <texture.hpp>
-#include <vertex_attrib.hpp>
+#include <SDK/program.hpp>
+#include <SDK/drawable.hpp>
+#include <SDK/context.hpp>
+#include <SDK/icanvas.hpp>
+#include <SDK/screen.hpp>
+#include <SDK/draw_array.hpp>
+#include <SDK/matrices.hpp>
+#include <SDK/texture.hpp>
+#include <SDK/vertex_attrib.hpp>
 #include <unistd.h>
 
+namespace umd = botson::sdk;
 
 int main(int argc, char **argv) {
     auto c = umd::context::create(umd::context::api::OPENGL_ES_2);
