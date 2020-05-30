@@ -94,6 +94,7 @@ pipeline {
             steps {
                 sh script: """
                     export LD_LIBRARY_PATH=/usr/local/botson/lib64 && \
+                    export SHADERS_PATH="${WORKSPACE}/shaders" && \
                     export DISPLAY=:0 && \
                     valgrind --tool=memcheck \
                              --xml=yes \
