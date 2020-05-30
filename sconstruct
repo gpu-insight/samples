@@ -13,7 +13,7 @@ try:
     env.Append(CPPPATH=os.path.join(botson_root, 'include'))
     env.Append(LIBS=['botson'])     # our libGL.so contains none of symbols yet
 except KeyError as e:
-    print("env var $BOTSON_ROOT not exist, built with default GL libraries.")
+    print("\033[91m {}\033[00m".format("env var $BOTSON_ROOT not exist, built with default GL libraries."))
 
 Export('env')
 
