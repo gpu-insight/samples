@@ -102,8 +102,6 @@ void display_callback() {
 }
 
 void idle_callback() {
-    //fprintf(stdout, "%s_%d\n", __func__, __LINE__);
-    //display_callback();
 }
 
 void reshape_callback(int width, int height) {

@@ -4,7 +4,8 @@ env = Environment(BINDIR='#bin',
                   LIBS=['SDK', 'EGL', 'GL'],
                   CCFLAGS=['-std=c++11', '-g', '-DGL_GLEXT_PROTOTYPES'])
 
-env.Decider('MD5-timestamp')
+env.Decider('MD5')
+
 Export('env')
 
 # get a list of subdirectories
