@@ -14,7 +14,7 @@ for last in sub_dirs:
     pass
 
 # Do nothing unless a subdirectory contains a build script named SConscript
-scons_scripts = [os.path.join(d, 'SConscript') for d in last[1] if os.path.exists(os.path.join(d, 'SConscript'))]
+scons_scripts = [os.path.join(d, 'sconscript') for d in last[1] if os.path.exists(os.path.join(d, 'sconscript'))]
 
 # Hierarchical build
 for s in scons_scripts:
