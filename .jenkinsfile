@@ -1,0 +1,148 @@
+import hudson.FilePath
+import jenkins.model.Jenkins
+
+def properties2String(prop) {
+    def sw = new StringWriter()
+    prop.store(sw, null)
+    return sw.toString()
+}
+
+def artifact(build, name) {
+   def rawBuild = build.getRawBuild();
+
+    def previousArtifacts = rawBuild.getArtifactManager()
+    return previousArtifacts.root().child(name)
+}
+
+pipeline {
+    agent {
+        node {
+            label 'memcheck'
+        }
+    }
+
+    triggers {
+        pollSCM('H/2 * * * *')
+        upstream(upstreamProjects: 'umd', threshold: hudson.model.Result.SUCCESS)
+    }
+
+    options {
+        disableConcurrentBuilds();
+    }
+
+    environment {
+        YUM_CONF_HOME='/home/jenkins/yum.d'
+        RPM_LOCAL_REPO_DIR='/jenkins/botson_repos'
+        RPM_REMOTE_REPO_ADDR='192.168.50.83'
+        RPM_REMOTE_REPO_DIR='/var/ftp/pub/iso/repos/botson'
+    }
+
+    stages {
+        stage('setup') {
+            steps {
+                dir("${YUM_CONF_HOME}") {
+                    git credentialsId: 'd506c69d-6153-4a2f-b3e2-3daf87e76522',
+                        url: 'http://gitlab.botson.com/neo/yum.conf.git'
+
+                    withCredentials([usernamePassword(credentialsId: '1000',
+                                                      passwordVariable: 'JENKINS_PASSWORD',
+                                                      usernameVariable: 'JENKINS_USERNAME')]) {
+                        sh script: "sed -i 's/.*/echo & |envsubst/e' yum.conf"
+                        sh script: """
+                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf makecache -y
+                        """
+                        sh script: """ \
+                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf install -y \
+                                mesa-libEGL-devel \
+                                freeglut \
+                                botson-umd \
+                                botson-kmd \
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('build') {
+            steps {
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/master']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[$class: 'SubmoduleOption',
+                        disableSubmodules: false,
+                        parentCredentials: true,
+                        recursiveSubmodules: true,
+                        reference: '',
+                        trackingSubmodules: false
+                    ]],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[
+                        credentialsId: '82ad0d8a-d442-4522-a91f-e4cb2caa3a02',
+                        url: 'http://gitlab.botson.com/bts_repos/gb/udriver/btx_samples.git'
+                    ]]
+                ])
+                sh script: 'pwd'
+                sh script: 'git clean -fdx'
+                sh script: 'scons -Q'
+            }
+        }
+
+        stage('memcheck') {
+            steps {
+                sh script: """
+                    export LD_LIBRARY_PATH=/usr/local/botson/lib64 && \
+                    export DISPLAY=:0 && \
+                    valgrind --tool=memcheck \
+                             --xml=yes \
+                             --xml-file=memcheck \
+                             --gen-suppressions=all \
+                             --leak-check=full \
+                             --leak-resolution=med \
+                             --track-origins=yes \
+                             --vgdb=no \
+                    ./bin/triangles
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                def mc = new Properties()
+                def arti = artifact(currentBuild, "memcheck")
+                if (arti.exists()) {
+                    mc.load(arti.open())
+                }
+                writeFile encoding: 'utf-8', file: 'memcheck', text: properties2String(mc)
+                archiveArtifacts artifacts: "memcheck", fingerprint: true
+            }
+        }
+
+        cleanup {
+            withCredentials([usernamePassword(credentialsId: '1000',
+                                              passwordVariable: 'JENKINS_PASSWORD',
+                                              usernameVariable: 'JENKINS_USERNAME')]) {
+                script {
+                    dir("${YUM_CONF_HOME}") {
+                        sh script: "sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root git clean -fdx"
+                    }
+                    dir("${WORKSPACE}") {
+                        sh script: "pwd"
+                        sh script: "sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root git clean -fdx"
+                    }
+                    'umd,kmd'.split(',').each { module ->
+                        sh script: """
+                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf remove -y \
+                                botson-${module}
+                        """
+                    }
+                    sh script: """
+                        sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf remove -y \
+                            freeglut
+                    """
+                }
+            }
+        }
+    }
+}
