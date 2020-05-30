@@ -4,7 +4,7 @@ Import('env')
 
 gl_env = env.Clone()
 
-source_list = [src for src in os.listdir('.') if src.endswith(('.cpp', '.c'))]
+source_list = gl_env.Glob('*.cpp')
 
 executables = []
 for src in source_list:
