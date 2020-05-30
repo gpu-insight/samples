@@ -8,6 +8,6 @@ source_list = glut_env.Glob('*.cpp')
 
 executables = []
 for src in source_list:
-    executables = glut_env.Program(src)
+    executables.append(glut_env.Program(src))
 
 glut_env.Alias('install', glut_env.Install(glut_env['BINDIR'], executables))
