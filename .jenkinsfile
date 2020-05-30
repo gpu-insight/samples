@@ -104,7 +104,7 @@ pipeline {
                              --leak-resolution=med \
                              --track-origins=yes \
                              --vgdb=no \
-                    ./bin/triangles
+                    ./bin/texview
                 """
             }
         }
