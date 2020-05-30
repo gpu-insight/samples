@@ -59,7 +59,7 @@ pipeline {
                         sh script: """ \
                             sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum install -y \
                                 mesa-libEGL-devel \
-                                freeglut \
+                                freeglut-devel \
                         """
                     }
                 }
