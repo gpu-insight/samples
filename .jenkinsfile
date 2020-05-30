@@ -17,7 +17,7 @@ def artifact(build, name) {
 pipeline {
     agent {
         node {
-            label 'memcheck'
+            label 'umd'
         }
     }
 
