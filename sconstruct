@@ -6,6 +6,15 @@ env = Environment(BINDIR='#bin',
 
 env.Decider('MD5')
 
+botson_root = ''
+try:
+    botson_root = os.environ['BOTSON_ROOT']
+    env.Append(LIBPATH=os.path.join(botson_root, 'lib64'))
+    env.Append(CPPPATH=os.path.join(botson_root, 'include'))
+    env.Append(LIBS=['botson'])     # our libGL.so contains none of symbols yet
+except KeyError as e:
+    print("env var $BOTSON_ROOT not exist, built with default GL libraries.")
+
 Export('env')
 
 # get a list of subdirectories
