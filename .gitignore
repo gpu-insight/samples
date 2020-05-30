@@ -6,3 +6,4 @@ dumps
 results
 log.*
 log_test.out
+compile_commands.json
