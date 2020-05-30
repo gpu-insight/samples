@@ -86,7 +86,7 @@ pipeline {
                 ])
                 sh script: 'pwd'
                 sh script: 'git clean -fdx'
-                sh script: 'scons -Q'
+                sh script: 'export BOTSON_ROOT=/usr/local/botson && scons -Q'
             }
         }
 
