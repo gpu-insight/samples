@@ -1,1 +1,13 @@
+import os
 Import('env')
+
+glut_env = env.Clone()
+glut_env.Append(LIBS=['glut'])
+
+source_list = [src for src in os.listdir('.') if src.endswith(('.cpp', '.c'))]
+
+executables = []
+for src in source_list:
+    executables.append(glut_env.Program(src))
+
+glut_env.Alias('install', glut_env.Install(glut_env['BINDIR'], executables))
