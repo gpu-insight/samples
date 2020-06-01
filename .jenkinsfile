@@ -36,14 +36,14 @@ pipeline {
                             sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf makecache
                         """
                         sh script: """
-                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf install -y
-                                botson-umd
+                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf install -y \
+                                botson-umd \
                                 botson-kmd
                         """
-                        sh script: """ \
+                        sh script: """
                             sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum install -y \
                                 mesa-libEGL-devel \
-                                freeglut-devel \
+                                freeglut-devel
                         """
                     }
                 }
