@@ -116,6 +116,10 @@ vert(GearVertex *v, GLfloat x, GLfloat y, GLfloat z, GLfloat n[3])
    return v + 1;
 }
 
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnarrowing"
+
 /**
  *  Create a gear wheel.
  * 
@@ -295,7 +299,7 @@ multiply(GLfloat *m, const GLfloat *n)
    memcpy(m, &tmp, sizeof tmp);
 }
 
-/** 
+/**
  * Rotates a 4x4 matrix.
  * 
  * @param[in,out] m the matrix to rotate
@@ -320,6 +324,7 @@ rotate(GLfloat *m, GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
    multiply(m, r);
 }
 
+#pragma GCC diagnostic pop
 
 /** 
  * Translates a 4x4 matrix.
@@ -609,6 +614,7 @@ gears_idle(void)
       frames = 0;
    }
 }
+
 
 static const char vertex_shader[] =
 "#version 300 es\n"
