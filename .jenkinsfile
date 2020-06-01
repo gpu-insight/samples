@@ -47,6 +47,12 @@ pipeline {
                         """
                     }
                 }
+
+                sh script: """
+                    export LD_LIBRARY_PATH=/usr/local/botson/lib64 && \
+                    export SHADERS_PATH="${WORKSPACE}/shaders" && \
+                    export DISPLAY=:0
+                """
             }
         }
 
@@ -74,31 +80,48 @@ pipeline {
             }
         }
 
-        stage('memcheck') {
-            steps {
-                sh script: """
-                    export LD_LIBRARY_PATH=/usr/local/botson/lib64 && \
-                    export SHADERS_PATH="${WORKSPACE}/shaders" && \
-                    export DISPLAY=:0 && \
-                    valgrind --tool=memcheck \
-                             --xml=yes \
-                             --xml-file=umdmem.xml \
-                             --gen-suppressions=all \
-                             --leak-check=full \
-                             --leak-resolution=med \
-                             --track-origins=yes \
-                             --vgdb=no \
-                    ./bin/texview
-                """
-            }
+        stage('valgrind') {
+            runValgrind (
+                childSilentAfterFork: true,
+                excludePattern: '',
+                generateSuppression: true,
+                ignoreExitCode: true,
+                includePattern: 'bin/texview',
+                outputDirectory: '',
+                outputFileEnding: '.memcheck',
+                programOptions: '',
+                removeOldReports: true,
+                suppressionFiles: '',
+                tool: [$class: 'ValgrindToolMemcheck',
+                    leakCheckLevel: 'full',
+                    showReachable: true,
+                    trackOrigins: true,
+                    undefinedValueErrors: true
+                ],
+                traceChildren: true,
+                valgrindExecutable: '',
+                valgrindOptions: '',
+                workingDirectory: ''
+            )
+
+            publishValgrind(
+                failBuildOnInvalidReports: false,
+                failBuildOnMissingReports: false,
+                failThresholdDefinitelyLost: '',
+                failThresholdInvalidReadWrite: '',
+                failThresholdTotal: '',
+                pattern: '*.memcheck',
+                publishResultsForAbortedBuilds: false,
+                publishResultsForFailedBuilds: false,
+                sourceSubstitutionPaths: '',
+                unstableThresholdDefinitelyLost: '',
+                unstableThresholdInvalidReadWrite: '',
+                unstableThreshTotal: ''
+            )
         }
     }
 
     post {
-        success {
-            archiveArtifacts artifacts: "umdmem.xml", fingerprint: true
-        }
-
         cleanup {
             withCredentials([usernamePassword(credentialsId: '1000',
                                               passwordVariable: 'JENKINS_PASSWORD',
