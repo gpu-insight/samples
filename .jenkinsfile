@@ -35,10 +35,10 @@ pipeline {
                         sh script: """
                             sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf makecache
                         """
-                        sh script: """ \
-                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf install -y \
-                                botson-umd \
-                                botson-kmd \
+                        sh script: """
+                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf install -y
+                                botson-umd
+                                botson-kmd
                         """
                         sh script: """ \
                             sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum install -y \
