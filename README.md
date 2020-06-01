@@ -3,7 +3,7 @@ The samples demonstrate the effect of some computer graphic concept and techniqu
 they work as well as mathematical principle on which they rely.
 
 ## Category
-- gl   - demonstrate OpenGL features and extensions
+- egl  - based EGL window system interfaces
 - glfw - based OpenGL FrameWork window interfaces
 - glut - based on GLUT window interfaces
 - glx  - based GLX and X Window interfaces
