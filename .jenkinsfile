@@ -21,7 +21,7 @@ pipeline {
         YUM_CONF_HOME='/home/jenkins/yum.d'
         LD_LIBRARY_PATH='/usr/local/botson/lib64'
         SHADERS_PATH="${WORKSPACE}/shaders"
-        DISPLAY=':0'
+        DISPLAY=:0
     }
 
     stages {
