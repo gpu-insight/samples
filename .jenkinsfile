@@ -98,7 +98,7 @@ pipeline {
                     export DISPLAY=:0 && \
                     valgrind --tool=memcheck \
                              --xml=yes \
-                             --xml-file=memcheck \
+                             --xml-file=umdmem.xml \
                              --gen-suppressions=all \
                              --leak-check=full \
                              --leak-resolution=med \
@@ -112,15 +112,7 @@ pipeline {
 
     post {
         success {
-            script {
-                def mc = new Properties()
-                def arti = artifact(currentBuild, "memcheck")
-                if (arti.exists()) {
-                    mc.load(arti.open())
-                }
-                writeFile encoding: 'utf-8', file: 'memcheck', text: properties2String(mc)
-                archiveArtifacts artifacts: "memcheck", fingerprint: true
-            }
+            archiveArtifacts artifacts: "umdmem.xml", fingerprint: true
         }
 
         cleanup {
