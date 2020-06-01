@@ -1,19 +1,6 @@
 import hudson.FilePath
 import jenkins.model.Jenkins
 
-def properties2String(prop) {
-    def sw = new StringWriter()
-    prop.store(sw, null)
-    return sw.toString()
-}
-
-def artifact(build, name) {
-   def rawBuild = build.getRawBuild();
-
-    def previousArtifacts = rawBuild.getArtifactManager()
-    return previousArtifacts.root().child(name)
-}
-
 pipeline {
     agent {
         node {
@@ -32,9 +19,6 @@ pipeline {
 
     environment {
         YUM_CONF_HOME='/home/jenkins/yum.d'
-        RPM_LOCAL_REPO_DIR='/jenkins/botson_repos'
-        RPM_REMOTE_REPO_ADDR='192.168.50.83'
-        RPM_REMOTE_REPO_DIR='/var/ftp/pub/iso/repos/botson'
     }
 
     stages {
@@ -49,7 +33,7 @@ pipeline {
                                                       usernameVariable: 'JENKINS_USERNAME')]) {
                         sh script: "sed -i 's/.*/echo & |envsubst/e' yum.conf"
                         sh script: """
-                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf makecache -y
+                            sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf makecache
                         """
                         sh script: """ \
                             sshpass -p \"${JENKINS_PASSWORD}\" sudo -u root yum -c ${YUM_CONF_HOME}/yum.conf install -y \
@@ -142,3 +126,4 @@ pipeline {
         }
     }
 }
+
