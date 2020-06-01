@@ -87,7 +87,7 @@ pipeline {
                              --leak-check=full \
                              --leak-resolution=med \
                              --track-origins=yes \
-                             --child-slient-after-fork=yes \
+                             --child-silent-after-fork=yes \
                              --trace-children=yes \
                              --vgdb=no \
                              ./bin/texview
