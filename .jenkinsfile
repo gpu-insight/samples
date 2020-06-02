@@ -87,17 +87,16 @@ pipeline {
                     programOptions: '',
                     removeOldReports: true,
                     suppressionFiles: '',
-                    tool: [
-                        {$class: 'ValgrindToolMemcheck',
+                    tool:
+                        [$class: 'ValgrindToolMemcheck',
                             leakCheckLevel: 'full',
                             showReachable: true,
                             trackOrigins: true,
                             undefinedValueErrors: true
-                        },
-                        {$class: 'ValgrindToolHelgrind',
+                        ],
+                        [$class: 'ValgrindToolHelgrind',
                             historyLevel: 'full'
-                        }
-                    ],
+                        ],
                     traceChildren: true,
                     valgrindExecutable: '',
                     valgrindOptions: '',
