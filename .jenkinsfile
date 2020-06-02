@@ -87,11 +87,14 @@ pipeline {
                     programOptions: '',
                     removeOldReports: true,
                     suppressionFiles: '',
-                    tool: [$class: 'ValgrindToolMemcheck',
-                        leakCheckLevel: 'full',
-                        showReachable: true,
-                        trackOrigins: true,
-                        undefinedValueErrors: true
+                    tool: [
+                        $class: 'ValgrindToolMemcheck',
+                            leakCheckLevel: 'full',
+                            showReachable: true,
+                            trackOrigins: true,
+                            undefinedValueErrors: true,
+                        $class: 'ValgrindToolHelgrind',
+                            historyLevel: ''
                     ],
                     traceChildren: true,
                     valgrindExecutable: '',
@@ -102,7 +105,7 @@ pipeline {
                 publishValgrind(
                     failBuildOnInvalidReports: false,
                     failBuildOnMissingReports: false,
-                    failThresholdDefinitelyLost: '2',
+                    failThresholdDefinitelyLost: '1',
                     failThresholdInvalidReadWrite: '',
                     failThresholdTotal: '',
                     pattern: '*.memcheck',
