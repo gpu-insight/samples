@@ -47,6 +47,12 @@ pipeline {
                         """
                     }
                 }
+
+                sh script: """
+                    export LD_LIBRARY_PATH=/usr/local/botson/lib64 && \
+                    export SHADERS_PATH="${WORKSPACE}/shaders" && \
+                    export DISPLAY=:0
+                """
             }
         }
 
@@ -76,22 +82,28 @@ pipeline {
 
         stage('valgrind') {
             steps {
-                sh script: """
-                    export LD_LIBRARY_PATH=/usr/local/botson/lib64 && \
-                    export SHADERS_PATH="${WORKSPACE}/shaders" && \
-                    export DISPLAY=:0 && \
-                    valgrind --tool=memcheck \
-                             --xml=yes \
-                             --xml-file=texview.memcheck \
-                             --gen-suppressions=no \
-                             --leak-check=full \
-                             --leak-resolution=med \
-                             --track-origins=yes \
-                             --child-silent-after-fork=yes \
-                             --trace-children=yes \
-                             --vgdb=no \
-                             ./bin/texview
-                """
+                runValgrind (
+                    childSilentAfterFork: true,
+                    excludePattern: '',
+                    generateSuppression: true,
+                    ignoreExitCode: true,
+                    includePattern: 'bin/texview',
+                    outputDirectory: '',
+                    outputFileEnding: '.memcheck',
+                    programOptions: '',
+                    removeOldReports: true,
+                    suppressionFiles: '',
+                    tool: [$class: 'ValgrindToolMemcheck',
+                        leakCheckLevel: 'full',
+                        showReachable: true,
+                        trackOrigins: true,
+                        undefinedValueErrors: true
+                    ],
+                    traceChildren: true,
+                    valgrindExecutable: '',
+                    valgrindOptions: '',
+                    workingDirectory: ''
+                )
 
                 publishValgrind(
                     failBuildOnInvalidReports: false,
