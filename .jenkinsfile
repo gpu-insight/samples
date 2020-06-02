@@ -102,7 +102,7 @@ pipeline {
                 publishValgrind(
                     failBuildOnInvalidReports: false,
                     failBuildOnMissingReports: false,
-                    failThresholdDefinitelyLost: '2',
+                    failThresholdDefinitelyLost: '1',
                     failThresholdInvalidReadWrite: '',
                     failThresholdTotal: '',
                     pattern: '*.memcheck',
