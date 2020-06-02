@@ -47,12 +47,6 @@ pipeline {
                         """
                     }
                 }
-
-                sh script: """
-                    export LD_LIBRARY_PATH=/usr/local/botson/lib64 && \
-                    export SHADERS_PATH="${WORKSPACE}/shaders" && \
-                    export DISPLAY=:0
-                """
             }
         }
 
@@ -76,7 +70,7 @@ pipeline {
                 ])
                 sh script: 'pwd'
                 sh script: 'git clean -fdx'
-                sh script: 'export BOTSON_ROOT=/usr/local/botson && scons -Q'
+                sh script: 'scons -Q'
             }
         }
 
