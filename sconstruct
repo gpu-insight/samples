@@ -1,8 +1,16 @@
 import os
 
-env = Environment(BINDIR='#bin',
+vars = Variables(None, ARGUMENTS)
+vars.Add(PathVariable('CONFIG_SHADER_PATH',
+                      'Path to shaders',
+                      os.path.join(GetLaunchDir(), 'shaders'),
+                      PathVariable.PathIsDir))
+
+env = Environment(variables=vars,
+                  BINDIR='#bin',
                   LIBS=['SDK', 'EGL', 'GL'],
-                  CCFLAGS=['-std=c++11', '-g', '-DGL_GLEXT_PROTOTYPES'])
+                  CCFLAGS=['-std=c++11', '-g', '-DGL_GLEXT_PROTOTYPES'],
+                  CPPDEFINES={'CONFIG_SHADER_PATH': '"\\\"$CONFIG_SHADER_PATH\\\""'})
 
 env.Decider('MD5')
 

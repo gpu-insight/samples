@@ -65,13 +65,16 @@ void init() {
 
     glClearColor(1.0, 1.0, 1.0, 0.0);
 
-    char *path;
     std::string vs_path, fs_path;
 
-    path = getenv("SHADERS_PATH");
+#if defined(CONFIG_SHADER_PATH)
+    const char *path = CONFIG_SHADER_PATH;
+#else
+    char *path = getenv("CONFIG_SHADER_PATH");
+#endif
     if (!path)
     {
-        std::cout << "environment variable SHADERS_PATH Not Found.\n";
+        std::cout << "Shaders Not Found.\n";
         exit(1);
     }
     else
