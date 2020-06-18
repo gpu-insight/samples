@@ -79,7 +79,7 @@ pipeline {
                 runValgrind (
                     childSilentAfterFork: true,
                     excludePattern: '',
-                    generateSuppression: true,
+                    generateSuppressions: true,
                     ignoreExitCode: true,
                     includePattern: 'bin/texview',
                     outputDirectory: '',
@@ -112,7 +112,7 @@ pipeline {
                     sourceSubstitutionPaths: '',
                     unstableThresholdDefinitelyLost: '',
                     unstableThresholdInvalidReadWrite: '',
-                    unstableThreshTotal: ''
+                    unstableThresholdTotal: ''
                 )
             }
         }
