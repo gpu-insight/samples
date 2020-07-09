@@ -30,17 +30,18 @@ GLuint fbo_id;
 
 void prepare_source_texture()
 {
+	/** IEEE 754 2.0, NaN, -2.0, NaN */
     static const GLuint rgba32ui[4] = { 0x3fffffff, 0x7fffffff, 0xbfffffff, 0xffffffff };
     static const GLubyte rgba8ui[4] = { 0x3f, 0x00, 0x00, 0x00 };
 
     glGenTextures(1, &source_tex_id);
     glBindTexture(GL_TEXTURE_2D_ARRAY, source_tex_id);
 
-//    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA32UI, 1, 1, 1, 0, GL_RGBA_INTEGER, GL_UNSIGNED_INT, 0);
-//    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, 1, 1, 1, GL_RGBA_INTEGER, GL_UNSIGNED_INT, (GLubyte *)rgba32ui);
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA32UI, 1, 1, 1, 0, GL_RGBA_INTEGER, GL_UNSIGNED_INT, 0);
+    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, 1, 1, 1, GL_RGBA_INTEGER, GL_UNSIGNED_INT, (GLubyte *)rgba32ui);
 
-    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8UI, 1, 1, 1, 0, GL_RGBA_INTEGER, GL_UNSIGNED_BYTE, 0);
-    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, 1, 1, 1, GL_RGBA_INTEGER, GL_UNSIGNED_BYTE, (GLubyte *)rgba8ui);
+    //glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8UI, 1, 1, 1, 0, GL_RGBA_INTEGER, GL_UNSIGNED_BYTE, 0);
+    //glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, 1, 1, 1, GL_RGBA_INTEGER, GL_UNSIGNED_BYTE, (GLubyte *)rgba8ui);
 
     glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 }
@@ -97,11 +98,6 @@ void init() {
     glActiveTexture(GL_TEXTURE0);
 
     glBindTexture(GL_TEXTURE_2D_ARRAY, source_tex_id);
-
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_R, texture_swizzle[0]);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_G, texture_swizzle[1]);
