@@ -1,11 +1,24 @@
 #version 430 core
 
 uniform usampler2DArray sampler;
-flat out uint result;
+flat out uvec4 result;
 
 void main()
 {
-    result = texture(sampler, vec3(0, 0, 0)).r;
+    uint temp = texture(sampler, vec3(0, 0, 0)).r;
+    
+    uint red = 0x3fffffffu;
+
+    if (0xffff == temp)
+    { 
+        result = uvec4(red, 0u, 0u, 0u);
+    }
+    else
+    {
+        result = uvec4(0, red, 0u, 0u);
+    }
+
+    // uint red = (temp.r << 24) + (temp.g << 16) + (temp.b << 8) + (temp.a << 0);
 
     switch (gl_VertexID)
     {

@@ -716,7 +716,7 @@ int
 main(int argc, char *argv[])
 {
    glutInit(&argc, argv);
-   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 
    /* Initialize the window */
    glutInitWindowSize(300, 300);

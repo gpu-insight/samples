@@ -14,6 +14,7 @@ vars.Add(PathVariable('CONFIG_SDK_PATH',
 env = Environment(variables=vars,
                   BINDIR='#bin',
                   LIBS=['SDK', 'EGL', 'GL'],
+		  LIBPATH=['/lib/aarch64-linux-gnu'],
                   CCFLAGS=['-std=c++11', '-g', '-DGL_GLEXT_PROTOTYPES'],
                   CPPDEFINES={'CONFIG_SHADER_PATH': '"\\\"$CONFIG_SHADER_PATH\\\""'})
 
