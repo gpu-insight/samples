@@ -6,22 +6,14 @@ vars.Add(PathVariable('CONFIG_SHADER_PATH',
                       os.path.join(GetLaunchDir(), 'shaders'),
                       PathVariable.PathIsDir))
 
-vars.Add(PathVariable('CONFIG_SDK_PATH',
-                      'Path to BOTSON SDK',
-                      '/usr',
-                      PathVariable.PathIsDir))
-
 env = Environment(variables=vars,
                   BINDIR='#bin',
-                  LIBS=['SDK', 'EGL', 'GL'],
-		  LIBPATH=['/lib/aarch64-linux-gnu'],
+                  LIBS=['botson_sdk', 'EGL', 'GL'],
+                  LIBPATH=['/usr/local/lib64', '/usr/lib64'],
                   CCFLAGS=['-std=c++11', '-g', '-DGL_GLEXT_PROTOTYPES'],
                   CPPDEFINES={'CONFIG_SHADER_PATH': '"\\\"$CONFIG_SHADER_PATH\\\""'})
 
 env.Decider('MD5')
-
-env.Append(LIBPATH=os.path.join('$CONFIG_SDK_PATH', 'lib64'))
-env.Append(CPPPATH=os.path.join('$CONFIG_SDK_PATH', 'include'))
 
 botson_root = ''
 try:
