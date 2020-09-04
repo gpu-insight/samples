@@ -27,52 +27,103 @@ int main(int argc, char **argv) {
                            "    gl_Position = vec4(vPosition);\n"
                            "    tex_coord = texCoord;\n"
                            "}\n"};
-    std::string fshader = {"#version 430 core\n"
-                           "precision mediump float;\n"
-                           "in vec2 tex_coord;\n"
-                           "uniform sampler2D tex;\n"
-                           "layout (location=0) out vec4 fColor;\n"
-                           "void main() {\n"
-                           /* "    fColor = texture(tex, tex_coord, -16.f);\n" */
-                           "    fColor = texture(tex, tex_coord);\n"
-                           "}\n"};
+    std::string fshader = {
+        "#version 430 core\n"
+        "precision mediump float;\n"
+        "in vec2 tex_coord;\n"
+        "uniform sampler2D tex;\n"
+        "layout (location=0) out vec4 fColor;\n"
+        "void main() {\n"
+        /* "    fColor = texture(tex, tex_coord, -16.f);\n" */
+        "    fColor = texture(tex, tex_coord);\n"
+        "}\n"};
 
     Program *prog = Program::from(Shader::source(GL_VERTEX_SHADER, vshader),
-                               Shader::source(GL_FRAGMENT_SHADER, fshader));
+                                  Shader::source(GL_FRAGMENT_SHADER, fshader));
     prog->activate();
 
-    auto position1 = std::make_shared<umd::vertex_attrib<GLfloat>>("vPosition", 3, std::vector<GLfloat> {
-            -1.0, -1.0, 0.0,
-            1.0, -1.0, 0.0,
-            1.0, 1.0, 0.0,
-            1.0, 1.0, 0.0,
-            -1.0, 1.0, 0.0,
-            -1.0, -1.0, 0.0,
-    });
-    auto position2 = std::make_shared<umd::vertex_attrib<GLfloat>>("vPosition", 3, std::vector<GLfloat> {
-            -1.0/2, -1.0/2, 0.0,
-            1.0/2, -1.0/2, 0.0,
-            1.0/2, 1.0/2, 0.0,
-            1.0/2, 1.0/2, 0.0,
-            -1.0/2, 1.0/2, 0.0,
-            -1.0/2, -1.0/2, 0.0,
-    });
-    auto position3 = std::make_shared<umd::vertex_attrib<GLfloat>>("vPosition", 3, std::vector<GLfloat> {
-            -1.0/16, -1.0/16, 0.0,
-            1.0/16, -1.0/16, 0.0,
-            1.0/16, 1.0/16, 0.0,
-            1.0/16, 1.0/16, 0.0,
-            -1.0/16, 1.0/16, 0.0,
-            -1.0/16, -1.0/16, 0.0,
-    });
-    auto tex_coord1 = std::make_shared<umd::vertex_attrib<GLfloat>>("texCoord", 2, std::vector<GLfloat> {
-            1.0, 1.0,
-            0.0, 1.0,
-            0.0, 0.0,
-            0.0, 0.0,
-            1.0, 0.0,
-            1.0, 1.0,
-    });
+    auto position1 =
+        std::make_shared<umd::vertex_attrib<GLfloat>>("vPosition", 3,
+                                                      std::vector<GLfloat>{
+                                                          -1.0,
+                                                          -1.0,
+                                                          0.0,
+                                                          1.0,
+                                                          -1.0,
+                                                          0.0,
+                                                          1.0,
+                                                          1.0,
+                                                          0.0,
+                                                          1.0,
+                                                          1.0,
+                                                          0.0,
+                                                          -1.0,
+                                                          1.0,
+                                                          0.0,
+                                                          -1.0,
+                                                          -1.0,
+                                                          0.0,
+                                                      });
+    auto position2 =
+        std::make_shared<umd::vertex_attrib<GLfloat>>("vPosition", 3,
+                                                      std::vector<GLfloat>{
+                                                          -1.0 / 2,
+                                                          -1.0 / 2,
+                                                          0.0,
+                                                          1.0 / 2,
+                                                          -1.0 / 2,
+                                                          0.0,
+                                                          1.0 / 2,
+                                                          1.0 / 2,
+                                                          0.0,
+                                                          1.0 / 2,
+                                                          1.0 / 2,
+                                                          0.0,
+                                                          -1.0 / 2,
+                                                          1.0 / 2,
+                                                          0.0,
+                                                          -1.0 / 2,
+                                                          -1.0 / 2,
+                                                          0.0,
+                                                      });
+    auto position3 =
+        std::make_shared<umd::vertex_attrib<GLfloat>>("vPosition", 3,
+                                                      std::vector<GLfloat>{
+                                                          -1.0 / 16,
+                                                          -1.0 / 16,
+                                                          0.0,
+                                                          1.0 / 16,
+                                                          -1.0 / 16,
+                                                          0.0,
+                                                          1.0 / 16,
+                                                          1.0 / 16,
+                                                          0.0,
+                                                          1.0 / 16,
+                                                          1.0 / 16,
+                                                          0.0,
+                                                          -1.0 / 16,
+                                                          1.0 / 16,
+                                                          0.0,
+                                                          -1.0 / 16,
+                                                          -1.0 / 16,
+                                                          0.0,
+                                                      });
+    auto tex_coord1 =
+        std::make_shared<umd::vertex_attrib<GLfloat>>("texCoord", 2,
+                                                      std::vector<GLfloat>{
+                                                          1.0,
+                                                          1.0,
+                                                          0.0,
+                                                          1.0,
+                                                          0.0,
+                                                          0.0,
+                                                          0.0,
+                                                          0.0,
+                                                          1.0,
+                                                          0.0,
+                                                          1.0,
+                                                          1.0,
+                                                      });
 
     GL_CHECK(glClearColor(1.0f, 0.0f, 0.0f, 0.0f));
     glClear(GL_COLOR_BUFFER_BIT);
@@ -88,9 +139,10 @@ int main(int argc, char **argv) {
     GL_CHECK(glSamplerParameteri(sampler, GL_TEXTURE_MAX_LOD, 11));
     GL_CHECK(glSamplerParameteri(sampler, GL_TEXTURE_LOD_BIAS, -16));
 
-    const shared_ptr <Program> &pp = std::shared_ptr<Program>(prog);
+    const shared_ptr<Program> &pp = std::shared_ptr<Program>(prog);
 
-    auto command1 = std::make_shared<umd::draw_array<GLfloat>>(canv, pp, 6, position1, tex_coord1);
+    auto command1 = std::make_shared<umd::draw_array<GLfloat>>(
+        canv, pp, 6, position1, tex_coord1);
     canv->apply(command1);
     c->swap_buffer();
 
@@ -98,14 +150,16 @@ int main(int argc, char **argv) {
 
     GL_CHECK(glSamplerParameteri(sampler, GL_TEXTURE_LOD_BIAS, -16));
 
-    auto command2 = std::make_shared<umd::draw_array<GLfloat>>(canv, pp, 6, position2, tex_coord1);
+    auto command2 = std::make_shared<umd::draw_array<GLfloat>>(
+        canv, pp, 6, position2, tex_coord1);
     canv->apply(command2);
     c->swap_buffer();
 
     sleep(5);
 
     GL_CHECK(glSamplerParameteri(sampler, GL_TEXTURE_LOD_BIAS, -31));
-    auto command3 = std::make_shared<umd::draw_array<GLfloat>>(canv, pp, 6, position3, tex_coord1);
+    auto command3 = std::make_shared<umd::draw_array<GLfloat>>(
+        canv, pp, 6, position3, tex_coord1);
     canv->apply(command3);
     c->swap_buffer();
 

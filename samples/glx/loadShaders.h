@@ -9,11 +9,10 @@
 
 #include <GL/gl.h>
 
-
 typedef struct ShaderInfo {
-       GLenum type;
-        const char *filename;
-        GLuint shader;
+    GLenum type;
+    const char *filename;
+    GLuint shader;
 } ShaderInfo;
 
 GLuint LoadShaders(ShaderInfo *shaders);
@@ -22,4 +21,4 @@ const GLchar *ReadShader(const char *filename);
 
 void GetVersionInfo(void);
 
-#endif //REDBOOK_LOADSHADERS_H
+#endif // REDBOOK_LOADSHADERS_H

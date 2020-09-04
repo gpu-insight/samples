@@ -41,32 +41,50 @@ int main(int argc, char **argv) {
                                Shader::source(GL_FRAGMENT_SHADER, fragShader));
     p->activate();
 
-    auto position = std::make_shared<umd::vertex_attrib<GLfloat>>("position", 3, std::vector<GLfloat> {
-            -1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            0.0, 10.0, -10.0,
-    });
-    auto color = std::make_shared<umd::vertex_attrib<GLfloat>>("color", 3, std::vector<GLfloat> {
-            1.0, 0.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 0.0, 1.0,
-    });
+    auto position =
+        std::make_shared<umd::vertex_attrib<GLfloat>>("position", 3,
+                                                      std::vector<GLfloat>{
+                                                          -1.0,
+                                                          0.0,
+                                                          0.0,
+                                                          1.0,
+                                                          0.0,
+                                                          0.0,
+                                                          0.0,
+                                                          10.0,
+                                                          -10.0,
+                                                      });
+    auto color =
+        std::make_shared<umd::vertex_attrib<GLfloat>>("color", 3,
+                                                      std::vector<GLfloat>{
+                                                          1.0,
+                                                          0.0,
+                                                          0.0,
+                                                          0.0,
+                                                          1.0,
+                                                          0.0,
+                                                          0.0,
+                                                          0.0,
+                                                          1.0,
+                                                      });
 
-// TODO why glShadeModel cause the following glEnable(GL_DEPTH_TEST) fail
-//    glShadeModel(GL_FLAT);
+    // TODO why glShadeModel cause the following glEnable(GL_DEPTH_TEST) fail
+    //    glShadeModel(GL_FLAT);
 
     GL_CHECK(glEnable(GL_DEPTH_TEST));
     GL_CHECK(glClearColor(1.0f, 1.0f, 1.0f, 0.0f));
     GL_CHECK(glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT));
 
     Matrices *matrices = Matrices::instance();
-    matrices->lookat(glm::vec3(0, 0, 20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+    matrices->lookat(glm::vec3(0, 0, 20), glm::vec3(0, 0, 0),
+                     glm::vec3(0, 1, 0));
     matrices->perspective(150.0f, 1.0f, 1.0f, 25.0f);
     p->uniform("mvp", matrices->mvp());
 
     // clipped while DEPTH_CLAMP disabled
-    const shared_ptr <Program> &pp = std::shared_ptr<Program>(p);
-    auto command = std::make_shared<umd::draw_array<GLfloat>>(canv, pp, 3, position, color);
+    const shared_ptr<Program> &pp = std::shared_ptr<Program>(p);
+    auto command = std::make_shared<umd::draw_array<GLfloat>>(canv, pp, 3,
+                                                              position, color);
     canv->apply(command);
     c->swap_buffer();
     sleep(2);

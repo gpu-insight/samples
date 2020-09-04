@@ -10,7 +10,6 @@
 #include <SDK/vertex_attrib.hpp>
 #include <SDK/draw_elements.hpp>
 
-
 #define TEXTURE_WIDTH 512
 #define TEXTURE_HEIGHT 512
 
@@ -43,16 +42,13 @@ int main(int argc, char **argv) {
     Program *p = Program::from(Shader::source(GL_VERTEX_SHADER, vertexShader),
                                Shader::source(GL_FRAGMENT_SHADER, fragShader));
     p->activate();
-    auto position = std::make_shared<umd::vertex_attrib<GLfloat>>("position", 3, std::vector<GLfloat>{
-            -128.0f, -128.0f, -128.0f,
-            -128.0f, -128.0f, 128.0f,
-            -128.0f, 128.0f, -128.0f,
-            -128.0f, 128.0f, 128.0f,
-            128.0f, -128.0f, -128.0f,
-            128.0f, -128.0f, 128.0f,
-            128.0f, 128.0f, -128.0f,
-            128.0f, 128.0f, 128.0f
-    });
+    auto position = std::make_shared<umd::vertex_attrib<GLfloat>>(
+        "position", 3,
+        std::vector<GLfloat>{-128.0f, -128.0f, -128.0f, -128.0f, -128.0f,
+                             128.0f,  -128.0f, 128.0f,  -128.0f, -128.0f,
+                             128.0f,  128.0f,  128.0f,  -128.0f, -128.0f,
+                             128.0f,  -128.0f, 128.0f,  128.0f,  128.0f,
+                             -128.0f, 128.0f,  128.0f,  128.0f});
 
     GL_CHECK(glEnable(GL_DEPTH_TEST));
     GL_CHECK(glClearColor(0.0f, 1.0f, 0.0f, 0.0f));
@@ -81,24 +77,35 @@ int main(int argc, char **argv) {
     GLuint tid;
     glGenTextures(1, &tid);
     glBindTexture(GL_TEXTURE_CUBE_MAP, tid);
-    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
+    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA8,
+                          TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
                           GL_UNSIGNED_BYTE, px_black_texture));
-    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
+    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA8,
+                          TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
                           GL_UNSIGNED_BYTE, nx_black_texture));
-    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
+    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA8,
+                          TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
                           GL_UNSIGNED_BYTE, py_white_texture));
-    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
+    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA8,
+                          TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
                           GL_UNSIGNED_BYTE, ny_white_texture));
-    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
+    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA8,
+                          TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
                           GL_UNSIGNED_BYTE, pz_white_texture));
-    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
+    GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA8,
+                          TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA,
                           GL_UNSIGNED_BYTE, nz_white_texture));
 
-    GL_CHECK(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
+    GL_CHECK(
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    GL_CHECK(
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    GL_CHECK(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S,
+                             GL_CLAMP_TO_EDGE));
+    GL_CHECK(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T,
+                             GL_CLAMP_TO_EDGE));
+    GL_CHECK(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R,
+                             GL_CLAMP_TO_EDGE));
 
     GL_CHECK(glActiveTexture(GL_TEXTURE0));
     glActiveTexture(GL_TEXTURE0);
@@ -108,32 +115,31 @@ int main(int argc, char **argv) {
     Matrices *matrices = Matrices::instance();
 
     matrices->rotate(45.0f, 0, 1, 0);
-    matrices->lookat(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1.0f), glm::vec3(0, 1, 0));
+    matrices->lookat(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1.0f),
+                     glm::vec3(0, 1, 0));
     matrices->perspective(150.0f, 1.0f, 1.0f, 5000.0f);
 
-//    matrices->ortho(-256.0f, 256.0f, -256.0f, 256.0f);
-//    matrices->lookat(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1.0f), glm::vec3(0, 1, 0));
+    //    matrices->ortho(-256.0f, 256.0f, -256.0f, 256.0f);
+    //    matrices->lookat(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1.0f),
+    //    glm::vec3(0, 1, 0));
 
-    const shared_ptr <Program> &pp = std::shared_ptr<Program>(p);
-    umd::vertex_index trip1(std::vector<unsigned short>{
-            0, 1, 3, 2,
-            4, 6, 7, 5,
-            2, 3, 7, 6,
-            0, 4, 5, 1,
-            0, 2, 6, 4,
-            1, 5, 7, 3
-    });
+    const shared_ptr<Program> &pp = std::shared_ptr<Program>(p);
+    umd::vertex_index trip1(
+        std::vector<unsigned short>{0, 1, 3, 2, 4, 6, 7, 5, 2, 3, 7, 6,
+                                    0, 4, 5, 1, 0, 2, 6, 4, 1, 5, 7, 3});
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, tid);
-    canv->apply(std::make_shared<umd::draw_elements<GLfloat>>(canv, pp, umd::draw_command::QUADS, trip1, position));
+    canv->apply(std::make_shared<umd::draw_elements<GLfloat>>(
+        canv, pp, umd::draw_command::QUADS, trip1, position));
 
     c->swap_buffer();
 
     GLubyte data[TEXTURE_HEIGHT][TEXTURE_WIDTH][4];
     memset(&data, 0, TEXTURE_HEIGHT * TEXTURE_WIDTH * 4 * sizeof(GLubyte));
 
-    glReadPixels(0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, &data);
+    glReadPixels(0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE,
+                 &data);
     for (auto row = 0; row < TEXTURE_HEIGHT; row++) {
         for (auto col = 0; col < TEXTURE_WIDTH; col++) {
             for (int rgb = 0; rgb < 4; rgb++) {

@@ -36,32 +36,55 @@ int main(int argc, char **argv) {
                            "}\n"};
 
     Program *prog = Program::from(Shader::source(GL_VERTEX_SHADER, vshader),
-                               Shader::source(GL_FRAGMENT_SHADER, fshader));
+                                  Shader::source(GL_FRAGMENT_SHADER, fshader));
     prog->activate();
 
-    auto position = std::make_shared<umd::vertex_attrib<GLfloat>>("vPosition", 3, std::vector<GLfloat> {
-            -1.0, -1.0, 0.0,
-            1.0, -1.0, 0.0,
-            1.0, 1.0, 0.0,
-            1.0, 1.0, 0.0,
-            -1.0, 1.0, 0.0,
-            -1.0, -1.0, 0.0,
-    });
-    auto tex_coord = std::make_shared<umd::vertex_attrib<GLfloat>>("texCoord", 2, std::vector<GLfloat> {
-            -1.0, -1.0,
-            1.0, -1.0,
-            1.0, 1.0,
-            1.0, 1.0,
-            -1.0, 1.0,
-            -1.0, -1.0,
-    });
+    auto position =
+        std::make_shared<umd::vertex_attrib<GLfloat>>("vPosition", 3,
+                                                      std::vector<GLfloat>{
+                                                          -1.0,
+                                                          -1.0,
+                                                          0.0,
+                                                          1.0,
+                                                          -1.0,
+                                                          0.0,
+                                                          1.0,
+                                                          1.0,
+                                                          0.0,
+                                                          1.0,
+                                                          1.0,
+                                                          0.0,
+                                                          -1.0,
+                                                          1.0,
+                                                          0.0,
+                                                          -1.0,
+                                                          -1.0,
+                                                          0.0,
+                                                      });
+    auto tex_coord =
+        std::make_shared<umd::vertex_attrib<GLfloat>>("texCoord", 2,
+                                                      std::vector<GLfloat>{
+                                                          -1.0,
+                                                          -1.0,
+                                                          1.0,
+                                                          -1.0,
+                                                          1.0,
+                                                          1.0,
+                                                          1.0,
+                                                          1.0,
+                                                          -1.0,
+                                                          1.0,
+                                                          -1.0,
+                                                          -1.0,
+                                                      });
 
-    unsigned char texture_data[] =
-    {
-       0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF,
-       0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF,
-       0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF,
-       0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF,
+    unsigned char texture_data[] = {
+        0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF,
+        0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00,
+        0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF,
+        0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF,
+        0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF,
+        0xFF, 0xFF, 0x00, 0xEF, 0xFF, 0xFF, 0x00, 0xEF, 0xFF,
     };
 
     glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
@@ -70,9 +93,10 @@ int main(int argc, char **argv) {
     GLuint tex;
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 4, 4, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 4, 4, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                 texture_data);
 
-    // texture size is 4x4 while window size is 800x600, 
+    // texture size is 4x4 while window size is 800x600,
     // so we must tell OpenGL how to handle the minification.
 
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -81,10 +105,11 @@ int main(int argc, char **argv) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     // clipped while DEPTH_CLAMP disabled
-    const shared_ptr <Program> &pp = std::shared_ptr<Program>(prog);
-    auto command = std::make_shared<umd::draw_array<GLfloat>>(canv, pp, 6, position, tex_coord);
-       
-    // original    
+    const shared_ptr<Program> &pp = std::shared_ptr<Program>(prog);
+    auto command = std::make_shared<umd::draw_array<GLfloat>>(
+        canv, pp, 6, position, tex_coord);
+
+    // original
     canv->apply(command);
     c->swap_buffer();
     sleep(2);
@@ -93,12 +118,12 @@ int main(int argc, char **argv) {
     const int height = 600;
     const int bytes_per_pixel = 4;
 
-    void *data = malloc(bytes_per_pixel*width*height*sizeof(GLubyte));
+    void *data = malloc(bytes_per_pixel * width * height * sizeof(GLubyte));
 
     glReadPixels(0, 0, 800, 600, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
     // only get blue channel, because green is zero
-    static const GLint swizzles1[] = { GL_GREEN, GL_GREEN, GL_BLUE, GL_ALPHA };
+    static const GLint swizzles1[] = {GL_GREEN, GL_GREEN, GL_BLUE, GL_ALPHA};
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzles1);
 
     canv->apply(command);
@@ -108,7 +133,7 @@ int main(int argc, char **argv) {
     glReadPixels(0, 0, 800, 600, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
     // replace alpha channel with green so that it is transparent
-    static const GLint swizzles2[] = { GL_BLUE, GL_ALPHA, GL_ZERO, GL_GREEN };
+    static const GLint swizzles2[] = {GL_BLUE, GL_ALPHA, GL_ZERO, GL_GREEN};
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzles2);
 
     canv->apply(command);
@@ -118,7 +143,7 @@ int main(int argc, char **argv) {
     glReadPixels(0, 0, 800, 600, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
     // replace red channel with blue and green channel with alpha
-    static const GLint swizzles3[] = { GL_BLUE, GL_ALPHA, GL_ZERO, GL_ALPHA };
+    static const GLint swizzles3[] = {GL_BLUE, GL_ALPHA, GL_ZERO, GL_ALPHA};
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzles2);
 
     canv->apply(command);

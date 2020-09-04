@@ -1,14 +1,14 @@
 /* =================================================================
- * Copyright (c) 2020 Botson Corp 
- * 
+ * Copyright (c) 2020 Botson Corp
+ *
  * This program is proprietary and confidential information of Botson.
- * And may not be used unless duly authorized. 
- * 
- * Revision: 
+ * And may not be used unless duly authorized.
+ *
+ * Revision:
  * Date: 2020-04-16
- * Author: 
- * Descriptions: 
- * 
+ * Author:
+ * Descriptions:
+ *
  */
 // =================================================================
 #include <stdio.h>
@@ -20,8 +20,8 @@
 #include <SDK/program.hpp>
 #include <SDK/shader.hpp>
 
-#define WIDTH    480
-#define HEIGHT    320
+#define WIDTH 480
+#define HEIGHT 320
 
 GLuint VAOs, Buffers;
 Program *program;
@@ -45,12 +45,8 @@ void init() {
     GLint z_location;
 
     GLfloat vertices[] = {
-            -0.90f, -0.90f,
-            0.85f, -0.90f,
-            -0.90f, 0.85f,
-            0.90f, -0.85f,
-            0.90f, 0.90f,
-            -0.85f, 0.90f,
+        -0.90f, -0.90f, 0.85f, -0.90f, -0.90f, 0.85f,
+        0.90f,  -0.85f, 0.90f, 0.90f,  -0.85f, 0.90f,
     };
 
     glGenVertexArrays(1, &VAOs);
@@ -72,13 +68,10 @@ void init() {
 #else
     char *path = getenv("CONFIG_SHADER_PATH");
 #endif
-    if (!path)
-    {
+    if (!path) {
         std::cout << "Shaders Not Found.\n";
         exit(1);
-    }
-    else
-    {
+    } else {
         std::string base_path = std::string(path);
         vs_path = base_path + "/triangles.vert";
         fs_path = base_path + "/triangles.frag";
@@ -104,8 +97,7 @@ void display_callback() {
     glutSwapBuffers();
 }
 
-void idle_callback() {
-}
+void idle_callback() {}
 
 void reshape_callback(int width, int height) {
     fprintf(stdout, "%s_%d\n", __func__, __LINE__);
@@ -122,82 +114,78 @@ void keyboard_callback(unsigned char key, int x, int y) {
     fprintf(stdout, "%s_%d\n", __func__, __LINE__);
     fprintf(stdout, "key:%c\n", key);
     switch (key) {
-        case 'b':
-        case 'B': {
-            if (blue > 0) {
-                blue -= 0.1;
-            }
-            fprintf(stdout, "blue:%f\n", blue);
-
-            program->uniform("blue", blue);
-            glutPostRedisplay();
+    case 'b':
+    case 'B': {
+        if (blue > 0) {
+            blue -= 0.1;
         }
-            break;
-        case 'c':
-        case 'C':
-            start = (start + 3) % 6;
-            glClear(GL_COLOR_BUFFER_BIT);
-            glBindVertexArray(VAOs);
-            glDrawArrays(GL_TRIANGLES, start, 3);
-            glutSwapBuffers();
-            break;
-        case 'g':
-        case 'G': {
-            if (green > 0) {
-                green -= 0.1;
-            }
-            fprintf(stdout, "green:%f\n", green);
+        fprintf(stdout, "blue:%f\n", blue);
 
-            program->uniform("green", green);
-            glutPostRedisplay();
+        program->uniform("blue", blue);
+        glutPostRedisplay();
+    } break;
+    case 'c':
+    case 'C':
+        start = (start + 3) % 6;
+        glClear(GL_COLOR_BUFFER_BIT);
+        glBindVertexArray(VAOs);
+        glDrawArrays(GL_TRIANGLES, start, 3);
+        glutSwapBuffers();
+        break;
+    case 'g':
+    case 'G': {
+        if (green > 0) {
+            green -= 0.1;
         }
-            break;
-        case 'r':
-        case 'R': {
-            if (red > 0) {
-                red -= 0.1;
-            }
-            fprintf(stdout, "red:%f\n", red);
+        fprintf(stdout, "green:%f\n", green);
 
-            program->uniform("red", red);
-            glutPostRedisplay();
+        program->uniform("green", green);
+        glutPostRedisplay();
+    } break;
+    case 'r':
+    case 'R': {
+        if (red > 0) {
+            red -= 0.1;
         }
-            break;
-        default:
-            break;
+        fprintf(stdout, "red:%f\n", red);
+
+        program->uniform("red", red);
+        glutPostRedisplay();
+    } break;
+    default:
+        break;
     }
 }
 
 void keyboard_up_callback(unsigned char key, int x, int y) {
     fprintf(stdout, "%s_%d\n", __func__, __LINE__);
-
 }
 
 void mouse_callback(int button, int state, int x, int y) {
     fprintf(stdout, "%s_%d\n", __func__, __LINE__);
     switch (button) {
-        case GLUT_LEFT_BUTTON:
-            if (state == GLUT_UP) {
-                x_off += 0.1;
-                fprintf(stdout, "x_off:%f\n", x_off);
+    case GLUT_LEFT_BUTTON:
+        if (state == GLUT_UP) {
+            x_off += 0.1;
+            fprintf(stdout, "x_off:%f\n", x_off);
 
-                program->uniform("x_offset", x_off);
-                glutPostRedisplay();
-            }
+            program->uniform("x_offset", x_off);
+            glutPostRedisplay();
+        }
 
-            break;
-        case GLUT_MIDDLE_BUTTON:
-            fprintf(stdout, "%s_%d\n", __func__, __LINE__);
-            break;
-        case GLUT_RIGHT_BUTTON:
-            if (state == GLUT_UP) {
-                y_off += 0.2;
-                fprintf(stdout, "y_off:%f\n", y_off);
+        break;
+    case GLUT_MIDDLE_BUTTON:
+        fprintf(stdout, "%s_%d\n", __func__, __LINE__);
+        break;
+    case GLUT_RIGHT_BUTTON:
+        if (state == GLUT_UP) {
+            y_off += 0.2;
+            fprintf(stdout, "y_off:%f\n", y_off);
 
-                program->uniform("y_offset", y_off);
-                glutPostRedisplay();
-            }
-            break;
+            program->uniform("y_offset", y_off);
+            glutPostRedisplay();
+        }
+        break;
     }
 }
 
