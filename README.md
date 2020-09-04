@@ -10,5 +10,7 @@ they work as well as mathematical principle on which they rely.
 
 ## Build
 ```bash
-scons
+$ meson build
+$ ninja-build -C build
+
 ```
