@@ -21,7 +21,7 @@ configure_file(
 subdir('data')
 
 # General dependencies
-gl_dep = dependency('GL', required : true)
+gl_dep = dependency('gl', required : true)
 sdk_dep = dependency('botson_sdk', required : true)
 
 # Specific dependencies
@@ -35,7 +35,7 @@ if egl_dep.found()
     subdir('samples/egl')
 endif
 
-x11_dep = dependency('X11', required : false)
+x11_dep = dependency('x11', required : false)
 if x11_dep.found()
     subdir('samples/glx')
 endif
