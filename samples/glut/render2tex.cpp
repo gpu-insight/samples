@@ -116,8 +116,6 @@ void init() {
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_G,
                     texture_swizzle[1]);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_B,
-                    texture_swizzle[2]);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_A,
                     texture_swizzle[3]);
 }
 

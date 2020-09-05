@@ -605,47 +605,8 @@ static void gears_idle(void) {
 }
 
 static const char vertex_shader[] =
-    "#version 300 es\n"
-    "precision mediump float;\n"
-    "layout (location = 0) in vec3 position;\n"
-    "layout (location = 1) in vec3 normal;\n"
-    "\n"
-    "uniform mat4 ModelViewProjectionMatrix;\n"
-    "uniform mat4 NormalMatrix;\n"
-    "uniform vec4 LightSourcePosition;\n"
-    "uniform vec4 MaterialColor;\n"
-    "\n"
-    "out vec4 Color;\n"
-    "\n"
-    "void main(void)\n"
-    "{\n"
-    "    // Transform the normal to eye coordinates\n"
-    "    vec3 N = normalize(vec3(NormalMatrix * vec4(normal, 1.0)));\n"
-    "\n"
-    "    // The LightSourcePosition is actually its direction for directional "
-    "light\n"
-    "    vec3 L = normalize(LightSourcePosition.xyz);\n"
-    "\n"
-    "    // Multiply the diffuse value by the vertex color (which is fixed in "
-    "this case)\n"
-    "    // to get the actual color that we will use to draw this vertex with\n"
-    "    float diffuse = max(dot(N, L), 0.0);\n"
-    "    Color = diffuse * MaterialColor;\n"
-    "\n"
-    "    // Transform the position to clip coordinates\n"
-    "    gl_Position = ModelViewProjectionMatrix * vec4(position, 1.0);\n"
-    "}";
 
 static const char fragment_shader[] =
-    "#version 300 es\n"
-    "precision mediump float;\n"
-    "in vec4 Color;\n"
-    "layout (location = 0) out vec4 fg_FragColor;\n"
-    "\n"
-    "void main(void)\n"
-    "{\n"
-    "    fg_FragColor = Color;\n"
-    "}";
 
 static void gears_init(void) {
     GLuint v, f, program;

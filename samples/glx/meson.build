@@ -1,14 +1,16 @@
 samples = [
-    ['cube', ['cubemap_seamless.cpp']],
-    ['depth', ['depth.cpp']],
+    ['glxgears', ['glxgears.cpp']]
 ]
 
 foreach s : samples
     executable(
         s[0],
         s[1],
-        dependencies : [gl_dep, sdk_dep, egl_dep],
+        cpp_args : '-Wno-narrowing',
+        dependencies : [gl_dep, sdk_dep, x11_dep],
+        include_directories : incdir,
         install : true,
         install_dir : get_option('bindir')
     )
 endforeach
+
