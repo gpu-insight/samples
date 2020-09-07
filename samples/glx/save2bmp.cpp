@@ -401,7 +401,6 @@ void save2bmp(char *filename, int windowWidth, int windowHeight)
     unsigned int *readPixelBuffer;
     readPixelBuffer = (unsigned int *)malloc(windowWidth * windowHeight * sizeof(unsigned int));
     glReadPixels(0, 0, windowWidth, windowHeight, GL_RGBA, GL_UNSIGNED_BYTE, readPixelBuffer);
-    glfinish();
     struct bmp_data bmp_data;
     bmp_data.width = windowWidth;
     bmp_data.height = windowHeight;

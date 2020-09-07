@@ -25,6 +25,7 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include "config.h"
+#include "save2bmp.h"
 
 #ifndef GLX_MESA_swap_control
 #define GLX_MESA_swap_control 1
@@ -882,6 +883,8 @@ static int handle_event(Display *dpy, Window win, XEvent *event) {
 }
 
 static void event_loop(Display *dpy, Window win) {
+    char bmp[128] = {0};
+    unsigned long long frame = 0;
     while (1) {
         int op;
         while (!animate || XPending(dpy) > 0) {
@@ -895,6 +898,9 @@ static void event_loop(Display *dpy, Window win) {
         }
 
         draw_frame(dpy, win);
+
+        snprintf(bmp, sizeof(bmp), "glxgears-%020llu.bmp", frame++);
+        save2bmp(bmp, 300, 300);
     }
 }
 
