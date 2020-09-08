@@ -1,5 +1,6 @@
 samples = [
-    ['glxgears', ['glxgears.cpp', 'save2bmp.cpp']]
+    ['glxgears', ['glxgears.cpp', 'save2bmp.cpp']],
+    ['ren2tex', ['render2tex.cpp', 'save2bmp.cpp']],
 ]
 
 foreach s : samples

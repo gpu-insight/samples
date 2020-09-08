@@ -1,31 +1,44 @@
-#version 430 core
+#version 430
 
-uniform usampler2DArray sampler;
-flat out uvec4 result;
+out vec2 texCoord;
+
+vec2 calc_texcoord(vec2 pos)
+{
+    return (pos * 0.5f + 0.5f);
+}
 
 void main()
 {
-    uint temp = texture(sampler, vec3(0, 0, 0)).r;
-    
-    uint red = 0x3fffffffu;
-
-    if (0xffff == temp)
-    { 
-        result = uvec4(red, 0u, 0u, 0u);
-    }
-    else
-    {
-        result = uvec4(0, red, 0u, 0u);
-    }
-
-    // uint red = (temp.r << 24) + (temp.g << 16) + (temp.b << 8) + (temp.a << 0);
+    vec2 p0 = vec2(-1.0, -1.0);
+    vec2 p1 = vec2(-1.0,  1.0);
+    vec2 p2 = vec2( 1.0, -1.0);
+    vec2 p3 = vec2( 1.0,  1.0);
 
     switch (gl_VertexID)
     {
-    case 0: gl_Position = vec4(-1.0, 1.0, 0.0, 1.0); break;
-    case 1: gl_Position = vec4( 1.0, 1.0, 0.0, 1.0); break;
-    case 2: gl_Position = vec4(-1.0,-1.0, 0.0, 1.0); break;
-    case 3: gl_Position = vec4( 1.0,-1.0, 0.0, 1.0); break;
+        case 0: 
+        {
+            texCoord = calc_texcoord(p0);
+            gl_Position = vec4(p0.x, p0.y, 0.0, 1.0);
+            break;
+        }
+        case 1: 
+        {
+            texCoord = calc_texcoord(p1);
+            gl_Position = vec4(p1.x, p1.y, 0.0, 1.0);
+            break;
+        }
+        case 2: 
+        {
+            texCoord = calc_texcoord(p2);
+            gl_Position = vec4(p2.x, p2.y, 0.0, 1.0);
+            break;
+        }
+        case 3: 
+        {
+            texCoord = calc_texcoord(p3);
+            gl_Position = vec4(p3.x, p3.y, 0.0, 1.0);
+            break;
+        }
     }
 }
-
