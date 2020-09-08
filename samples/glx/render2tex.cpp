@@ -409,7 +409,7 @@ static void event_loop(Display *dpy, Window win) {
         draw_frame(dpy, win);
 
         if (bmp) {
-            snprintf(filename, sizeof(filename), "glxgears-%014llu.bmp", frame++);
+            snprintf(filename, sizeof(filename), "ren2tex-%014llu.bmp", frame++);
             save2bmp(filename, winWidth, winHeight);
         }
     }
@@ -474,7 +474,7 @@ int main(int argc, char *argv[]) {
         winHeight = DisplayHeight(dpy, scrnum);
     }
 
-    make_window(dpy, "glxgears", x, y, winWidth, winHeight, &win, &ctx, &visId);
+    make_window(dpy, "ren2tex", x, y, winWidth, winHeight, &win, &ctx, &visId);
     XMapWindow(dpy, win);
     glXMakeCurrent(dpy, win, ctx);
     query_vsync(dpy, win);
