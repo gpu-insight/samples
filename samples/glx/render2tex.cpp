@@ -78,6 +78,8 @@ static GLint samples = 0;
 static GLboolean animate = GL_TRUE;
 
 unsigned int winWidth = 300, winHeight = 300;
+unsigned int texWidth = 64, texHeight = 64;
+
 std::string data_path = std::string(SAMPLES_DATA_PATH);
 Program *render_prog;
 Program *compute_prog;
@@ -91,7 +93,7 @@ static void gen_tex() {
     glBindTexture(GL_TEXTURE_2D, tex);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 512, 512, 0, GL_RED, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, texWidth, texHeight, 0, GL_RED, GL_FLOAT, NULL);
 
     glBindImageTexture(0, tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
 }
@@ -117,7 +119,7 @@ static void update_tex(int frame) {
     compute_prog->activate();
 
     compute_prog->uniform("roll", frame * 0.01f);
-    glDispatchCompute(512/8, 512/8, 1);
+    glDispatchCompute(texWidth/8, texHeight/8, 1);
 }
 
 static void render(void) {
