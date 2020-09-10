@@ -127,11 +127,20 @@ static GLfloat ProjectionMatrix[16];
 /** The direction of the directional light for the scene */
 static const GLfloat LightSourcePosition[4] = {5.0, 5.0, 10.0, 1.0};
 
+typedef enum {
+    GEAR_RED = 1,
+    GEAR_GREEN = 2,
+    GEAR_BLUE = 4,
+    GEAR_ALL = 7,
+} gear_mask;
+
+static gear_mask gear_filter = GEAR_ALL;
 static GLboolean fullscreen = GL_FALSE; /* Create a single fullscreen window */
-static GLboolean stereo = GL_FALSE;     /* Enable stereo.  */
+static GLboolean bmp = GL_FALSE;     /* Enable stereo.  */
 static GLint samples = 0;           /* Choose visual with at least N samples. */
 static GLboolean animate = GL_TRUE; /* Animation */
 
+static unsigned int winWidth = 300, winHeight = 300;
 
 /**
  * Fills a gear vertex.
@@ -562,9 +571,9 @@ static void draw_gears(void) {
     rotate(transform, 2 * M_PI * view_rotz / 360.0, 0, 0, 1);
 
     /* Draw the gears */
-    draw_gear(gear1, transform, -3.0, -2.0, angle, red);
-    draw_gear(gear2, transform, 3.1, -2.0, -2 * angle - 9.0, green);
-    draw_gear(gear3, transform, -3.1, 4.2, -2 * angle - 25.0, blue);
+    if (GEAR_RED & gear_filter) draw_gear(gear1, transform, -3.0, -2.0, angle, red);
+    if (GEAR_GREEN & gear_filter) draw_gear(gear2, transform, 3.1, -2.0, -2 * angle - 9.0, green);
+    if (GEAR_BLUE & gear_filter) draw_gear(gear3, transform, -3.1, 4.2, -2 * angle - 25.0, blue);
 }
 
 /** Draw single frame, do SwapBuffers, compute FPS */
@@ -708,8 +717,6 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
     /* Singleton attributes. */
     attribs[i++] = GLX_RGBA;
     attribs[i++] = GLX_DOUBLEBUFFER;
-    if (stereo)
-        attribs[i++] = GLX_STEREO;
 
     /* Key/value attributes. */
     attribs[i++] = GLX_RED_SIZE;
@@ -735,8 +742,6 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
     visinfo = glXChooseVisual(dpy, scrnum, attribs);
     if (!visinfo) {
         printf("Error: couldn't get an RGB, Double-buffered");
-        if (stereo)
-            printf(", Stereo");
         if (samples > 0)
             printf(", Multisample");
         printf(" visual\n");
@@ -883,7 +888,7 @@ static int handle_event(Display *dpy, Window win, XEvent *event) {
 }
 
 static void event_loop(Display *dpy, Window win) {
-    char bmp[128] = {0};
+    char filename[128] = {0};
     unsigned long long frame = 0;
     while (1) {
         int op;
@@ -899,24 +904,27 @@ static void event_loop(Display *dpy, Window win) {
 
         draw_frame(dpy, win);
 
-        snprintf(bmp, sizeof(bmp), "glxgears-%020llu.bmp", frame++);
-        save2bmp(bmp, 300, 300);
+        if (bmp)
+        {
+            snprintf(filename, sizeof(filename), "glxgears-%020llu.bmp", frame++);
+            save2bmp(filename, winWidth, winHeight);
+        }
     }
 }
 
 static void usage(void) {
     printf("Usage:\n");
     printf("  -display <displayname>  set the display to run on\n");
-    printf("  -stereo                 run in stereo mode\n");
+    printf("  -bmp                    save in bitmap format\n");
     printf("  -samples N              run in multisample mode with at least N "
            "samples\n");
     printf("  -fullscreen             run in fullscreen mode\n");
     printf("  -info                   display OpenGL renderer info\n");
     printf("  -geometry WxH+X+Y       window geometry\n");
+    printf("  -gears <mask>            which gears will be drawn\n");
 }
 
 int main(int argc, char *argv[]) {
-    unsigned int winWidth = 300, winHeight = 300;
     int x = 0, y = 0;
     Display *dpy;
     Window win;
@@ -932,10 +940,13 @@ int main(int argc, char *argv[]) {
             i++;
         } else if (strcmp(argv[i], "-info") == 0) {
             printInfo = GL_TRUE;
-        } else if (strcmp(argv[i], "-stereo") == 0) {
-            stereo = GL_TRUE;
+        } else if (strcmp(argv[i], "-bmp") == 0) {
+            bmp = GL_TRUE;
         } else if (i < argc - 1 && strcmp(argv[i], "-samples") == 0) {
             samples = strtod(argv[i + 1], NULL);
+            ++i;
+        } else if (i < argc - 1 && strcmp(argv[i], "-gears") == 0) {
+            gear_filter = (gear_mask)strtod(argv[i + 1], NULL);
             ++i;
         } else if (strcmp(argv[i], "-fullscreen") == 0) {
             fullscreen = GL_TRUE;
