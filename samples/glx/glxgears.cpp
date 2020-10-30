@@ -704,6 +704,9 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
                         int height, Window *winRet, GLXContext *ctxRet,
                         VisualID *visRet) {
     int attribs[64];
+    int profile_attrib[] = {
+            GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB, None
+    };
     int i = 0;
 
     int scrnum;
@@ -711,8 +714,10 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
     unsigned long mask;
     Window root;
     Window win;
+    XVisualInfo *vinfo;
     GLXContext ctx;
-    XVisualInfo *visinfo;
+    GLXFBConfig *fbconfigs;
+    int n;
 
     /* Singleton attributes. */
     attribs[i++] = GLX_RGBA;
@@ -739,25 +744,26 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
     scrnum = DefaultScreen(dpy);
     root = RootWindow(dpy, scrnum);
 
-    visinfo = glXChooseVisual(dpy, scrnum, attribs);
-    if (!visinfo) {
+    fbconfigs = glXChooseFBConfig(dpy, scrnum, attribs, &n);
+    if (!fbconfigs) {
         printf("Error: couldn't get an RGB, Double-buffered");
         if (samples > 0)
             printf(", Multisample");
-        printf(" visual\n");
+        printf(" FBConfig\n");
         exit(1);
     }
 
+    vinfo = glXGetVisualFromFBConfig(dpy, fbconfigs[0]);
     /* window attributes */
     attr.background_pixel = 0;
     attr.border_pixel = 0;
-    attr.colormap = XCreateColormap(dpy, root, visinfo->visual, AllocNone);
+    attr.colormap = XCreateColormap(dpy, root, vinfo->visual, AllocNone);
     attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
     /* XXX this is a bad way to get a borderless window! */
     mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
-    win = XCreateWindow(dpy, root, x, y, width, height, 0, visinfo->depth,
-                        InputOutput, visinfo->visual, mask, &attr);
+    win = XCreateWindow(dpy, root, x, y, width, height, 0, vinfo->depth,
+                        InputOutput, vinfo->visual, mask, &attr);
 
     if (fullscreen)
         no_border(dpy, win);
@@ -775,7 +781,7 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
                                &sizehints);
     }
 
-    ctx = glXCreateContext(dpy, visinfo, NULL, True);
+    ctx = glXCreateContextAttribsARB(dpy, fbconfigs[0], NULL, True, profile_attrib);
     if (!ctx) {
         printf("Error: glXCreateContext failed\n");
         exit(1);
@@ -783,9 +789,9 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
 
     *winRet = win;
     *ctxRet = ctx;
-    *visRet = visinfo->visualid;
+    *visRet = vinfo->visualid;
 
-    XFree(visinfo);
+    XFree(vinfo);
 }
 
 /**
