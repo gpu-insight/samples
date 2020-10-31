@@ -746,7 +746,7 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
 
     /* Key/value attributes. */
     attribs[i++] = GLX_RENDER_TYPE;
-    attribs[i++] = GLX_RGBA;
+    attribs[i++] = GLX_RGBA_BIT;
     attribs[i++] = GLX_DOUBLEBUFFER;
     attribs[i++] = True;
     attribs[i++] = GLX_RED_SIZE;
