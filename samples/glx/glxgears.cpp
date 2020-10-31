@@ -8,8 +8,8 @@
  * Date: 2020-09-04
  * Author: Luc
  * Descriptions:
- *  This is a out-of-compatible-apis version of the famous "glxgears"
- *  demo.
+ *  This is an advanced version of the famous "glxgears" that requires
+ *  at least OpenGL 3.3 core profile.
  */
 // =================================================================
 
@@ -705,7 +705,9 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
                         VisualID *visRet) {
     int attribs[64];
     int profile_attrib[] = {
-            GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB, None
+            GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+	    GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+	    None
     };
     int i = 0;
 
@@ -725,13 +727,15 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
 
     /* Key/value attributes. */
     attribs[i++] = GLX_RED_SIZE;
-    attribs[i++] = 1;
+    attribs[i++] = 8;
     attribs[i++] = GLX_GREEN_SIZE;
-    attribs[i++] = 1;
+    attribs[i++] = 8;
     attribs[i++] = GLX_BLUE_SIZE;
-    attribs[i++] = 1;
+    attribs[i++] = 8;
+    attribs[i++] = GLX_ALPHA_SIZE;
+    attribs[i++] = 8;
     attribs[i++] = GLX_DEPTH_SIZE;
-    attribs[i++] = 1;
+    attribs[i++] = 8;
     if (samples > 0) {
         attribs[i++] = GLX_SAMPLE_BUFFERS;
         attribs[i++] = 1;
