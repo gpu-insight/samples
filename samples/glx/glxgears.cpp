@@ -109,6 +109,8 @@ struct gear {
     int nstrips;
     /** The Vertex Buffer Object holding the vertices in the graphics card */
     GLuint vbo;
+    /** for Mesa's llvmpipe. if no, glDrawArrays(no VAO bound) */
+    GLuint vao;
 };
 
 /** The view rotation */
@@ -141,6 +143,23 @@ static GLint samples = 0;           /* Choose visual with at least N samples. */
 static GLboolean animate = GL_TRUE; /* Animation */
 
 static unsigned int winWidth = 300, winHeight = 300;
+
+/**
+ * Determine whether or not a GLX extension is supported.
+ */
+static int is_glx_extension_supported(Display *dpy, const char *query) {
+    const int scrnum = DefaultScreen(dpy);
+    const char *glx_extensions = NULL;
+    const size_t len = strlen(query);
+    const char *ptr;
+
+    if (glx_extensions == NULL) {
+        glx_extensions = glXQueryExtensionsString(dpy, scrnum);
+    }
+
+    ptr = strstr(glx_extensions, query);
+    return ((ptr != NULL) && ((ptr[len] == ' ') || (ptr[len] == '\0')));
+}
 
 /**
  * Fills a gear vertex.
@@ -322,6 +341,9 @@ static struct gear *create_gear(GLfloat inner_radius, GLfloat outer_radius,
     glBindBuffer(GL_ARRAY_BUFFER, gear->vbo);
     glBufferData(GL_ARRAY_BUFFER, gear->nvertices * sizeof(GearVertex),
                  gear->vertices, GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &gear->vao);
+    glBindVertexArray(gear->vao);
 
     return gear;
 }
@@ -625,6 +647,7 @@ static void init(void) {
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
+    std::cout << glGetString(GL_VERSION) << "\n";
     /* Compile the vertex shader */
     std::string data_path = std::string(SAMPLES_DATA_PATH);
 
@@ -705,7 +728,7 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
                         VisualID *visRet) {
     int attribs[64];
     int profile_attrib[] = {
-            GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
 	    GLX_CONTEXT_MINOR_VERSION_ARB, 3,
 	    None
     };
@@ -721,21 +744,19 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
     GLXFBConfig *fbconfigs;
     int n;
 
-    /* Singleton attributes. */
+    /* Key/value attributes. */
+    attribs[i++] = GLX_RENDER_TYPE;
     attribs[i++] = GLX_RGBA;
     attribs[i++] = GLX_DOUBLEBUFFER;
-
-    /* Key/value attributes. */
+    attribs[i++] = True;
     attribs[i++] = GLX_RED_SIZE;
-    attribs[i++] = 8;
+    attribs[i++] = 1;
     attribs[i++] = GLX_GREEN_SIZE;
-    attribs[i++] = 8;
+    attribs[i++] = 1;
     attribs[i++] = GLX_BLUE_SIZE;
-    attribs[i++] = 8;
-    attribs[i++] = GLX_ALPHA_SIZE;
-    attribs[i++] = 8;
+    attribs[i++] = 1;
     attribs[i++] = GLX_DEPTH_SIZE;
-    attribs[i++] = 8;
+    attribs[i++] = 1;
     if (samples > 0) {
         attribs[i++] = GLX_SAMPLE_BUFFERS;
         attribs[i++] = 1;
@@ -785,9 +806,17 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
                                &sizehints);
     }
 
-    ctx = glXCreateContextAttribsARB(dpy, fbconfigs[0], NULL, True, profile_attrib);
+    if (is_glx_extension_supported(dpy, "GLX_ARB_create_context_profile")) {
+        PFNGLXCREATECONTEXTATTRIBSARBPROC pglXCreateContextAttribsARB =
+                (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddressARB(
+                        (const GLubyte *) "glXCreateContextAttribsARB");
+        ctx = (*pglXCreateContextAttribsARB)(dpy, fbconfigs[0], NULL, True, profile_attrib);
+    } else {
+        ctx = glXCreateContext(dpy, vinfo, NULL, True);
+    }
+
     if (!ctx) {
-        printf("Error: glXCreateContext failed\n");
+        printf("Error: failed to create GL context.\n");
         exit(1);
     }
 
@@ -796,23 +825,6 @@ static void make_window(Display *dpy, const char *name, int x, int y, int width,
     *visRet = vinfo->visualid;
 
     XFree(vinfo);
-}
-
-/**
- * Determine whether or not a GLX extension is supported.
- */
-static int is_glx_extension_supported(Display *dpy, const char *query) {
-    const int scrnum = DefaultScreen(dpy);
-    const char *glx_extensions = NULL;
-    const size_t len = strlen(query);
-    const char *ptr;
-
-    if (glx_extensions == NULL) {
-        glx_extensions = glXQueryExtensionsString(dpy, scrnum);
-    }
-
-    ptr = strstr(glx_extensions, query);
-    return ((ptr != NULL) && ((ptr[len] == ' ') || (ptr[len] == '\0')));
 }
 
 /**
